@@ -15,7 +15,7 @@ La lista de tokens válidos es la siguiente:
 
 | Token              | Ejemplo           | Descripción                                                       |
 | ------------------ | ----------------- | ----------------------------------------------------------------- |
-| COMMENT            | /_ hello world _/ | Cualquier texto entre /\* \*/                                     |
+| COMMENT            | /* hello world */ | Cualquier texto entre /\* \*/                                     |
 | IF                 | if                | Palabra reservada if                                              |
 | ELSE               | else              | Palabra reservada else                                            |
 | WHILE              | while             | Palabra reservada while                                           |
