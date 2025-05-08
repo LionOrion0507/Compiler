@@ -52,6 +52,8 @@ La lista de tokens válidos es la siguiente:
 | SEMICOLON          | ;                 | Punto y coma para terminar una expresión                          |
 | WHITESPACE         |                   | Espacios en blanco                                                |
 
+Cualquier caractér que no esté incluido en esta lista resulta en un token de INVALIDTOKEN para todo su lexema.
+
 # Como correr el codigo
 
 `python .\src\lexer.py`
