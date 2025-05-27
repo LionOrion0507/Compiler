@@ -61,6 +61,13 @@ Cualquier caractér que no esté incluido en esta lista resulta en un token de I
 `python .\src\lexer.py`
 `python .\src\syntax_analyzer.py`
 
+# Instrucciones de inputs
+
+Para ingresar sentencias compuestas, primero hay que empezar con una función, declarada como
+function (tipo de regreso) Identificador() {}
+
+Si se quiere ingresar una sentencia simple, se debe inicalizar una variable.
+
 # Flujo de código del analizador léxico
 
 1. Se definen los tokens y sus patrones de expresiones regulares.
