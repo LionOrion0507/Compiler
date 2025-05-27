@@ -1,4 +1,5 @@
 import re
+import json
 
 # Aqui se definen los tipos de tokens y sus patrones regex
 TokenTypes = [
@@ -8,6 +9,7 @@ TokenTypes = [
   ("WHILE", r'\bwhile\b'),
   ("FOR", r'\bfor\b'),
   ("RETURN", r'\breturn\b'),
+  ("FUNCTION", r'\bfunction\b'),
   ("KEYWORD_INT", r'\bint\b'),
   ("KEYWORD_STR", r'\bstr\b'),
   ("KEYWORD_FLOAT", r'\bfloat\b'),
@@ -37,6 +39,7 @@ TokenTypes = [
   ("LBRACE", r'\{'),
   ("RBRACE", r'\}'),
   ("SEMICOLON", r';'),
+  ("COMMA", r','),
   ("WHITESPACE", r'\s+'),
 ]
 
@@ -45,9 +48,6 @@ class Token:
   def __init__(self, tokenType, value):
     self.type = tokenType
     self.value = value
-  
-  def __str__(self):
-    return f'Token type: {self.type}, value: {self.value}'
    
 def Tokenize(source_code):
   # Aquí se crea la posición inicial de donde empezar a analizar el código. También se compilan los strings de los patrones regex
@@ -93,10 +93,7 @@ if __name__ == "__main__":
   code = input('Input your code: ')
   
   tokens = Tokenize(code)
-
-  with open("lexer.txt", "a") as file:
-    file.write("CODE ANALYZED\n")
+  jsonSerializedTokens = json.dumps(tokens, default=lambda token: token.__dict__)
   
-  for token in tokens:
-    with open("lexer.txt", "a") as file:
-      file.write(str(token) + "\n")
+  with open("lexer.json", "w") as file:
+    json.dump(jsonSerializedTokens, file)

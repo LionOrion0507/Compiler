@@ -15,12 +15,13 @@ La lista de tokens válidos es la siguiente:
 
 | Token              | Ejemplo           | Descripción                                                       |
 | ------------------ | ----------------- | ----------------------------------------------------------------- |
-| COMMENT            | /* hello world */ | Cualquier texto entre /\* \*/                                     |
+| COMMENT            | /_ hello world _/ | Cualquier texto entre /\* \*/                                     |
 | IF                 | if                | Palabra reservada if                                              |
 | ELSE               | else              | Palabra reservada else                                            |
 | WHILE              | while             | Palabra reservada while                                           |
 | FOR                | for               | Palabra reservada for                                             |
 | RETURN             | return            | Palabra reservada return                                          |
+| FUNCTION           | function          | Palabra reservada function                                        |
 | KEYWORD_INT        | int               | Identificador int para variables                                  |
 | KEYWORD_STR        | str               | Identificador str para variables                                  |
 | KEYWORD_FLOAT      | float             | Identificador float para variables                                |
@@ -50,6 +51,7 @@ La lista de tokens válidos es la siguiente:
 | LBRACE             | {                 | Delimitador de llave izquierda                                    |
 | RBRACE             | }                 | Delimitador de llave derecha                                      |
 | SEMICOLON          | ;                 | Punto y coma para terminar una expresión                          |
+| COMMA              | ,                 | Coma para separar elementos                                       |
 | WHITESPACE         |                   | Espacios en blanco                                                |
 
 Cualquier caractér que no esté incluido en esta lista resulta en un token de INVALIDTOKEN para todo su lexema.
@@ -57,8 +59,9 @@ Cualquier caractér que no esté incluido en esta lista resulta en un token de I
 # Como correr el codigo
 
 `python .\src\lexer.py`
+`python .\src\syntax_analyzer.py`
 
-# Flujo de código
+# Flujo de código del analizador léxico
 
 1. Se definen los tokens y sus patrones de expresiones regulares.
 2. Se define la clase de Tokens, en donde se guarda cada token con su tipo y valor.
@@ -70,4 +73,15 @@ Cualquier caractér que no esté incluido en esta lista resulta en un token de I
 - Si se parece a un patrón que NO sea WHITESPACE o COMMENT, se agrega a la lista y se continua analizando.
 - Si no se parece a un patrón, se agrega un INVALIDTOKEN a la lista y se continua analizando.
 
-5. Al acabar de analizar, la lista de tokens se añade en un archivo llamado lexer.txt
+5. Al acabar de analizar, la lista de tokens se añade en un archivo llamado lexer.json
+
+# Flujo de código del analizador sintáctico
+
+1. Se definen las clases de las sentencias y declaraciones para el AST.
+2. Se reciben los tokens de lexer.json.
+3. Se inicia el parseo de los tokens.
+4. Se revisa primero si es una declaración de variable o de una función.
+5. Si es de variable, se revisa que tipo de sentencia es y las expresiones que incluye.
+6. Si es de función, lo que le sigue dentro de las llaves se revisa como una sentencia compuesta.
+7. Dentro de una sentencia compuesta, pueden haber declaraciones de variables, bucles while, for, ifs y otras expresiones.
+8. Al acabar de analizar todo, se escribe el AST en un archivo llamado ast.json
