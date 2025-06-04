@@ -1,15 +1,10 @@
 import unittest
-from unittest.mock import patch, mock_open
-import json
-import sys
-import os
 
 from syntax_analyzer import (
     SyntaxAnalyzer, Program, VariableDeclaration, FunctionDeclaration,
     Parameter, CompoundStatement, IfStatement, WhileStatement, ForStatement,
     ReturnStatement, ExpressionStatement, BinaryOperation, AssignmentExpression,
-    Identifier, IntegerLiteral, FloatLiteral, StringLiteral, BooleanLiteral,
-    loadTokensFromFile, saveAstToJson
+    IntegerLiteral, FloatLiteral, StringLiteral, BooleanLiteral,
 )
 
 class TestSyntaxAnalyzer(unittest.TestCase):
@@ -18,13 +13,13 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         """Set up test fixtures before each test method."""
         self.maxDiff = None  # Show full diff for failed assertions
     
-    def create_tokens(self, token_list):
+    def createTokens(self, token_list):
         """Helper method to create token dictionaries."""
         return token_list
     
-    def test_variable_declaration_int(self):
+    def testVariableDeclarationInt(self):
         """Test parsing of integer variable declaration."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'x'},
             {'type': 'SEMICOLON', 'value': ';'}
@@ -43,9 +38,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertEqual(var_decl.identifier, 'x')
         self.assertIsNone(var_decl.initializer)
     
-    def test_variable_declaration_with_initialization(self):
+    def testVariableDeclarationWithInitialization(self):
         """Test parsing of variable declaration with initialization."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'x'},
             {'type': 'ASSIGN', 'value': '='},
@@ -61,9 +56,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(var_decl.initializer, IntegerLiteral)
         self.assertEqual(var_decl.initializer.value, 42)
     
-    def test_function_declaration_no_params(self):
+    def testFunctionDeclarationNoParams(self):
         """Test parsing of function declaration without parameters."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'FUNCTION', 'value': 'function'},
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'main'},
@@ -84,9 +79,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertEqual(len(func_decl.parameters), 0)
         self.assertIsInstance(func_decl.body, CompoundStatement)
     
-    def test_function_declaration_with_params(self):
+    def testFunctionDeclarationWithParams(self):
         """Test parsing of function declaration with parameters."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'FUNCTION', 'value': 'function'},
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'add'},
@@ -117,9 +112,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertEqual(param2.typeSpec, 'int')
         self.assertEqual(param2.identifier, 'b')
     
-    def test_if_statement(self):
+    def testIfStatement(self):
         """Test parsing of if statement."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'FUNCTION', 'value': 'function'},
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'test'},
@@ -147,9 +142,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(if_stmt.condition, BinaryOperation)
         self.assertEqual(if_stmt.condition.operator, '==')
     
-    def test_while_statement(self):
+    def testWhileStatement(self):
         """Test parsing of while statement."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'FUNCTION', 'value': 'function'},
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'test'},
@@ -177,9 +172,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(while_stmt.condition, BinaryOperation)
         self.assertEqual(while_stmt.condition.operator, '<')
     
-    def test_for_statement(self):
+    def testForStatement(self):
         """Test parsing of for statement."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'FUNCTION', 'value': 'function'},
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'test'},
@@ -217,9 +212,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(for_stmt.condition, BinaryOperation)
         self.assertIsInstance(for_stmt.increment, AssignmentExpression)
     
-    def test_return_statement(self):
+    def testReturnStatement(self):
         """Test parsing of return statement."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'FUNCTION', 'value': 'function'},
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'test'},
@@ -242,9 +237,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(return_stmt.expression, IntegerLiteral)
         self.assertEqual(return_stmt.expression.value, 42)
     
-    def test_binary_operations(self):
+    def testBinaryOperations(self):
         """Test parsing of binary operations."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'result'},
             {'type': 'ASSIGN', 'value': '='},
@@ -270,9 +265,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(right_side, BinaryOperation)
         self.assertEqual(right_side.operator, '*')
     
-    def test_assignment_expression(self):
+    def testAssignmentExpression(self):
         """Test parsing of assignment expression."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'FUNCTION', 'value': 'function'},
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'test'},
@@ -296,9 +291,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(expr_stmt.expression, AssignmentExpression)
         self.assertEqual(expr_stmt.expression.operator, '=')
     
-    def test_different_literals(self):
+    def testDifferentLiterals(self):
         """Test parsing of different literal types."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'KEYWORD_FLOAT', 'value': 'float'},
             {'type': 'IDENTIFIER', 'value': 'f'},
             {'type': 'ASSIGN', 'value': '='},
@@ -337,10 +332,10 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(bool_decl.initializer, BooleanLiteral)
         self.assertTrue(bool_decl.initializer.value)
     
-    def test_syntax_errors(self):
+    def testSyntaxErrors(self):
         """Test handling of syntax errors."""
         # Missing semicolon
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'x'}
             # Missing semicolon
@@ -352,7 +347,7 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertFalse(success)
         self.assertTrue(len(analyzer.errors) > 0)
     
-    def test_empty_program(self):
+    def testEmptyProgram(self):
         """Test parsing of empty program."""
         tokens = []
         
@@ -363,9 +358,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(ast, Program)
         self.assertEqual(len(ast.declarations), 0)
     
-    def test_parenthesized_expression(self):
+    def testParenthesizedExpression(self):
         """Test parsing of parenthesized expressions."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'result'},
             {'type': 'ASSIGN', 'value': '='},
@@ -388,9 +383,9 @@ class TestSyntaxAnalyzer(unittest.TestCase):
         self.assertIsInstance(var_decl.initializer, BinaryOperation)
         self.assertEqual(var_decl.initializer.operator, '*')
     
-    def test_unary_minus(self):
+    def testUnaryMinus(self):
         """Test parsing of unary minus expression."""
-        tokens = self.create_tokens([
+        tokens = self.createTokens([
             {'type': 'KEYWORD_INT', 'value': 'int'},
             {'type': 'IDENTIFIER', 'value': 'x'},
             {'type': 'ASSIGN', 'value': '='},
